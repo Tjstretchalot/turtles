@@ -1,8 +1,13 @@
 dofile('pathfinding.lua')
 
 local function isTree()
-	return true
+	local success, data = turtle.inspect()
+	if success then
+		if data.name == 'minecraft:log' then return true end
+	end
+	return false
 end
+
 local function cutTree()
 	if not isTree() then return end
 	turtle.dig()
@@ -13,6 +18,7 @@ local function cutTree()
 		move.up()
 	end
 	pathfinding.gotoY(curY)
+	move.back()
 end
 
 
