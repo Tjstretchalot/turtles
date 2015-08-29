@@ -36,6 +36,7 @@ position.save = function()
 	posFile.writeLine(tostring(position.y))
 	posFile.writeLine(tostring(position.z))
 	posFile.writeLine(tostring(position.dir))
+	posFile.close()
 end
 
 position.directionToString = function(dir)
