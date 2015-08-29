@@ -7,7 +7,7 @@ position.NORTH = position.NEGATIVE_Z
 position.POSITIVE_X = 2 -- East
 position.EAST = position.POSITIVE_X
 position.POSITIVE_Z = 3 -- South
-position.SOUTH = position.POSITVE_Z
+position.SOUTH = position.POSITIVE_Z
 position.NEGATIVE_X = 4 -- West
 position.WEST = position.NEGATIVE_X
 
@@ -18,9 +18,7 @@ position.dir = position.NORTH
 
 local POSITION_FILE = 'position.pos'
 position.load = function()
-	print('Loading position...')
 	if not fs.exists(POSITION_FILE) then
-		print('Position file not found')
 		return
 	end
 	
@@ -30,18 +28,14 @@ position.load = function()
 	position.z = tonumber(posFile.readLine())
 	position.dir = tonumber(posFile.readLine())
 	posFile.close()
-	print('Loaded position:')
-	print('  (' .. position.x .. ', ' .. position.y .. ', ' .. position.z .. ') dir: ' .. position.directionToString(position.dir))
 end
 
 position.save = function()
-	print('Saving position...')
 	local posFile = fs.open(POSITION_FILE, 'w')
 	posFile.writeLine(tostring(position.x))
 	posFile.writeLine(tostring(position.y))
 	posFile.writeLine(tostring(position.z))
 	posFile.writeLine(tostring(position.dir))
-	print('Done')
 end
 
 position.directionToString = function(dir)
@@ -50,6 +44,10 @@ position.directionToString = function(dir)
 	elseif dir == position.SOUTH then return 'SOUTH'
 	elseif dir == position.WEST then return 'WEST'
 	else return tostring(dir) end
+end
+
+position.description = function()
+	return '(' .. position.x .. ', ' .. position.y .. ', ' .. position.z .. ') dir: ' .. position.directionToString(position.dir)
 end
 
 position.load()
