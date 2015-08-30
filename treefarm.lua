@@ -3,6 +3,8 @@ dofile('inventory.lua')
 local desiredCount = 16
 local logChestLoc = {-1, 0, 1}
 local saplingChestLoc = {-3, 0, 1}
+local rowCount = 4
+local colCount = 3
 local function isTree()
 	local success, data = turtle.inspect()
 	if success then
@@ -43,8 +45,8 @@ local function getSaplings()
 end
 
 while true do
-	for i = 1, 3 do
-		for j = 1, 3 do
+	for i = 1, rowCount do
+		for j = 1, colCount do
 			gotoTree(i, j)
 			cutTree()
 			plantSapling()
