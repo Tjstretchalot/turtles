@@ -63,3 +63,34 @@ inventory.dumpInventory = function(itemName, damage, dropFn)
 		end
 	end
 end
+
+inventory.acquireItem = function(itemName, damage, count, suckFn, dropFn) 
+	suckFn = suckFn or turtle.suck
+	dropFn = dropFn or turtle.drop
+	count = count or 1
+	
+	turtle.select(1)
+	local lastCount = inventory.countItem(itemName, damage)
+	while lastCount < count do
+		local amountToSuck = count - lastCount
+		suckFn(amountToSuck)
+		local newCount = inventory.countItem(itemName, damage)
+		if newCount ~= lastCount then 
+			print('Insufficient ' .. itemName .. ' from chest!')
+			os.sleep(5) 
+		end
+		lastCount = newCount
+	end
+	
+	while lastCount > count do
+		turtle.selectItem(itemName, damage)
+		local amountToDrop = lastCount - count
+		dropFn(amountToDrop)
+		local newCount = inventory.countItem(itemName, damage)
+		if newCount == lastCount then
+			print('Chest is full!')
+			os.sleep(5)
+		end
+		lastCount = newCount
+	end
+end
