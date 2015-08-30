@@ -10,7 +10,7 @@ inventory.countItem = function(itemName, damage)
 		if data then
 			if data.name == itemName then
 				if not damage or damage == data.damage then 
-					count = count + item.count
+					count = count + data.count
 				end
 			end
 		end

@@ -4,10 +4,16 @@ dofile('position.lua')
 move = {}
 
 local function myMove(times, moveFn, updatePosFn)
+	local digFn = 0
+	if moveFn == turtle.up then digFn = turtle.digUp
+	elseif moveFn == turtle.forward then digFn = turtle.dig end
+	
 	times = times or 1
 	
 	for i=1, times do
-		while not moveFn() do end
+		while not moveFn() do 
+			if digFn then digFn() end
+		end
 		updatePosFn()
 		position.save()
 	end
