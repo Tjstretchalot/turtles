@@ -69,4 +69,5 @@ while true do
 		end
 	end
 	handleInventory()
+	os.sleep(30)
 end
