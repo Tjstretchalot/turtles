@@ -75,7 +75,7 @@ inventory.acquireItem = function(itemName, damage, count, suckFn, dropFn)
 		local amountToSuck = count - lastCount
 		suckFn(amountToSuck)
 		local newCount = inventory.countItem(itemName, damage)
-		if newCount ~= lastCount then 
+		if newCount == lastCount then 
 			print('Insufficient ' .. itemName .. ' from chest!')
 			os.sleep(5) 
 		end
