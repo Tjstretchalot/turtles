@@ -1,80 +1,76 @@
-dofile('inventory.lua')
+if tunnel then return end
 dofile('pathfinding.lua')
+dofile('inventory.lua')
 
-print('How tall? (it will be 3 wide)')
-local height = tonumber(io.read())
-print('How long?')
-local length = tonumber(io.read())
-print('Come back afterward? 0 or 1')
-local comeback = tonumber(io.read())
+--[[
+	This provides highly methods of creating tunnels / strip mines
+	of arbitrary width and length
+]]
 
-local function placeFloor()
-	inventory.selectItem('minecraft:cobblestone')
-	turtle.placeDown()
-end
+tunnel = {}
+tunnel.config = {
+}
 
-local function doLayerHeight(height)
-	move.face(position.EAST)
+
+--[[
+	Mines blocks above the turtle, such that there
+	is a clearing (including the turtle) of height
 	
-	for i=1, height do
-		turtle.digUp()
+	height - how tall the column is above the turtles
+			 current position
+]]
+tunnel.doColumn = function(height) 
+	local startingY = position.y
+	if height >= 2 then turtle.digUp() end
+	for i=3, height do 
 		move.up()
-		turtle.dig()
+		turtle.digUp()
 	end
-	
-	move.face(position.WEST)
-	for i=1, height do
-		turtle.dig()
-		move.down()
-	end
+	pathfinding.gotoY(startingY)
 end
 
-local function doLayer()
-	placeFloor()
+--[[
+	Mines one layer of "breadth" (east/west) of the tunnel. Assumes the turtle
+	starts at 0, 0, 0 and the tunnel is equally far to the west as to the east for
+	breadth (breaking ties by going 1 extra west). 
 	
-	move.face(position.WEST)
-	turtle.dig()
-	move.forward()
-	placeFloor()
-	move.back()
+	breadthIndex - The current index of breadth (or row) that we are currently on.
+	width        - How wide the tunnel is (size of the breadth)
+	height       - How tall the tunnel is
+]]
+tunnel.doBreadth = function(breadthIndex, width, height)
+	if width == 1 then
+		pathfinding.goto(0, 0, -breadthIndex)
+		doColumn(height)
+		return
+	end
+	
+	local distanceFromCenter = width / 2
+	if width % 2 == 1 then 
+		distanceFromCenter = (width - 1) / 2
+	end
+	pathfinding.gotoXYZ(-distanceFromCenter, 0, -breadthIndex)
+	
 	move.face(position.EAST)
-	turtle.dig()
-	move.forward()
-	placeFloor()
-	move.back()
+	for i=2, width do 
+		doColumn(height)
+		move.forward()
+	end
+	doColumn(height)
+end
+
+--[[
+	Mines the entire tunnel, doing one layer of breadth at a time.
+	Assumes the turtle starts at 0, 0, 0, and the tunnel is equally
+	far to the west as to the east for breadth (breaking ties by going
+	1 extra west).
 	
-	doLayerHeight(height - 1)
-	pathfinding.gotoY(0)
-end
-
-local function nextLayer()
-	move.face(position.NORTH)
-	turtle.dig()
-	move.forward()
-end
-
-pathfinding.goto(0, 0, 0)
-move.face(position.NORTH)
-
-for i=1, length do
-	doLayer()
-	nextLayer()
-end
-doLayer()
-
-if comeback == 1 then
-	pathfinding.gotoXZY(0, 0, 0)
-	move.face(position.NORTH)
-else
-	print("Forget position information? 0 or 1")
-	local forget = tonumber(io.read())
-	if forget then
-		position.x = 0
-		position.y = 0
-		position.z = 0
-		position.dir = position.NORTH
-		position.save()
+	width  - how wide (east/west) the tunnel is
+	height - how tall (up/down) the tunnel is
+	length - how long (north/south) the tunnel is
+]]
+tunnel.doTunnel = function(width, height, length) 
+	for i=1, length do
+		doBreadth(i, width, height)
 	end
 end
-
-
