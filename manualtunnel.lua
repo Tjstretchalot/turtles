@@ -1,11 +1,23 @@
 dofile('tunnel.lua')
 
+local function readStr(default)
+	local choice = io.read()
+	if string.len(choice) > 0 then
+		return choice
+	end
+	return default
+end
+
+local function readNum(default)
+	return tonumber(readStr(default))
+end
+
 if position.x ~= 0 or position.y ~= 0 or position.z ~= 0 or position.dir ~= position.NORTH then
-	print('Reset old position information?')
+	print('Reset old position information? (1)')
 	print('  0 - No, pretend I did not notice that (WARNING: unpredictable)')
 	print('  1 - Yes, delete old position information')
 	print('  2 - No, but take me back to 0, 0, 0 and face north.')
-	local choice = tonumber(io.read())
+	local choice = readNum(1)
 	
 	if choice == 1 then
 		position.forget()
@@ -31,18 +43,6 @@ if fs.exists('manualtunnel.dat') then
 	local f = fs.open('manualtunnel.dat', 'r')
 	config = textutils.unserialize(f.readAll())
 	f.close()
-end
-
-local function readStr(default)
-	local choice = io.read()
-	if string.len(choice) > 0 then
-		return choice
-	end
-	return default
-end
-
-local function readNum(default)
-	return tonumber(readStr(default))
 end
 
 print('How wide? ('..config.width..')')
