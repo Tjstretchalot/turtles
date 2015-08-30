@@ -47,6 +47,14 @@ position.directionToString = function(dir)
 	else return tostring(dir) end
 end
 
+position.forget = function()
+	position.x = 0
+	position.y = 0
+	position.z = 0
+	position.dir = position.NORTH
+	position.save()
+end
+
 position.description = function()
 	return '(' .. position.x .. ', ' .. position.y .. ', ' .. position.z .. ') dir: ' .. position.directionToString(position.dir)
 end
