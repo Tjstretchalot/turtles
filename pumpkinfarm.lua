@@ -17,7 +17,7 @@ local function farmPumpkinColumn(colNum)
 		if success then
 			if data.name == 'minecraft:pumpkin' then
 			turtle.digDown()
-			elseif data.name == 'minecraft:melon' then
+			elseif data.name == 'minecraft:melon_block' then
 			turtle.digDown()
 			end
 		end
