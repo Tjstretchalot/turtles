@@ -25,9 +25,9 @@ local function farmPumpkinColumn(colNum)
 end
 local function emptyInventory()
 	pathfinding.goto(pumpkinChest.x, pumpkinChest.y, pumpkinChest.z)
-	inventory.dumpInventory(86, nil, turtle.dropDown)
+	inventory.dumpInventory('minecraft:pumpkin', nil, turtle.dropDown)
 	pathfinding.goto(melonChest.x, melonChest.y, melonChest.z)
-	inventory.dumpInventory(360, nil, turtle.dropDown)
+	inventory.dumpInventory('minecraft:melon', nil, turtle.dropDown)
 end
 while true do
 	for i = 1, colNumTotal do
