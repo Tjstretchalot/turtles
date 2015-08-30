@@ -48,9 +48,18 @@ inventory.combineStacks = function()
 	end
 end
 
-inventory.dumpInventory = function() 
-	for i=1, 16 do
-		turtle.select(i)
-		turtle.drop()
+inventory.dumpInventory = function(itemName, damage, dropFn) 
+	dropFn = dropFn or turtle.drop
+	
+	if not itemName then 
+		for i=1, 16 do
+			turtle.select(i)
+			dropFn()
+		end
+	else
+		while inventory.haveItem(itemName, damage) do
+			inventory.selectItem(itemName, damage)
+			dropFn()
+		end
 	end
 end
