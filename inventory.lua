@@ -83,7 +83,7 @@ inventory.acquireItem = function(itemName, damage, count, suckFn, dropFn)
 	end
 	
 	while lastCount > count do
-		turtle.selectItem(itemName, damage)
+		inventory.selectItem(itemName, damage)
 		local amountToDrop = lastCount - count
 		dropFn(amountToDrop)
 		local newCount = inventory.countItem(itemName, damage)
