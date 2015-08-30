@@ -1,17 +1,26 @@
 dofile('pathfinding.lua')
 dofile('inventory.lua')
-
-local finalHeight = 9
-
 local function doColumn(height, colNum)
-	colNum = colNum or 1
+	print('Function started')
 	local desiredZ = colNum - 1
+	print('Going to ' .. desiredZ)
 	pathfinding.gotoZXY(desiredZ, 0, 0)
-	move.face('position.NORTH')
-	for i = 1, colNum do
+	print('Facing North')
+	move.face(position.NORTH)
+	print('Starting Column')
+	for i = 1, height do
 		inventory.selectItem('minecraft:stonebrick')
 		turtle.place()
 		move.up()
 	end
+	print('Done with column ' .. colNum)
 end
-doColumn(4, 1)
+print('How long should the wall be?')
+local wallLength = tonumber(io.read())
+print('How High?')
+local wallHeight = tonumber(io.read())
+for i = 1, wallLength do
+	doColumn(wallHeight, i)
+end
+pathfinding.goto(0, 0, 0)
+move.face(position.NORTH)
