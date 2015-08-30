@@ -9,7 +9,8 @@ dofile('inventory.lua')
 
 tunnel = {}
 tunnel.config = {
-	floorType = 'minecraft:cobblestone'
+	floorType = 'minecraft:cobblestone',
+	detectCeiling = false
 }
 
 tunnel.onNotEnoughFloor = function()
@@ -28,7 +29,6 @@ end
 	placeFloor - if the floor should be placed below the turtle
 ]]
 tunnel.doColumn = function(height, placeFloor) 
-	local startingY = position.y
 	if placeFloor then
 		if not inventory.haveItem(tunnel.config.floorType) then
 			tunnel.onNotEnoughFloor()
@@ -37,11 +37,20 @@ tunnel.doColumn = function(height, placeFloor)
 		turtle.placeDown()
 	end
 	
-	if height >= 2 then turtle.digUp() end
-	for i=3, height do 
-		move.up()
-		turtle.digUp()
+	local startingY = position.y
+	if tunnel.config.detectCeiling then
+		while turtle.detectUp() do
+			turtle.digUp()
+			move.up()
+		end
+	else
+		if height >= 2 then turtle.digUp() end
+		for i=3, height do 
+			move.up()
+			turtle.digUp()
+		end
 	end
+	
 	pathfinding.gotoY(startingY)
 end
 

@@ -23,7 +23,8 @@ local config = {
 	length = 5,
 	comeback = 1,
 	placeFloor = 1,
-	floorType = 'minecraft:cobblestone'
+	floorType = 'minecraft:cobblestone',
+	detectCeiling = 0
 }
 
 if fs.exists('manualtunnel.dat') then
@@ -58,12 +59,22 @@ print('Place floor? ('..tostring(config.placeFloor)..')')
 config.placeFloor = readNum(config.placeFloor)
 print('Floor type? ('..config.floorType..')')
 config.floorType = readStr(config.floorType)
+print('Detect ceiling? ('..config.detectCeiling..')')
+print('  0 - No, use the height from earlier')
+print('  1 - Yes, keep going up until theres empty space')
+config.detectCeiling = readNum(config.detectCeiling)
 
 local f = fs.open('manualtunnel.dat', 'w')
 f.write(textutils.serialize(config))
 f.close()
 
+-- Truthiness in lua is bad
+if config.comeback == 0 then config.comeback = false end
+if config.placeFloor == 0 then config.placeFloor = false end
+if config.detectCeiling == 0 then config.detectCeiling = false end
+
 tunnel.config.floorType = config.floorType
+tunnel.config.detectCeiling = config.detectCeiling
 tunnel.doTunnel(config.width, config.height, config.length, config.placeFloor)
 
 if config.comeback then
