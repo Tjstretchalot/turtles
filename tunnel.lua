@@ -65,6 +65,16 @@ doLayer()
 if comeback == 1 then
 	pathfinding.gotoXZY(0, 0, 0)
 	move.face(position.NORTH)
+else
+	print("Forget position information? 0 or 1")
+	local forget = tonumber(io.read())
+	if forget then
+		position.x = 0
+		position.y = 0
+		position.z = 0
+		position.dir = position.NORTH
+		position.save()
+	end
 end
 
 
