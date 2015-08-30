@@ -1,5 +1,23 @@
 dofile('pathfinding.lua')
 dofile('inventory.lua')
+
+if position.x ~= 0 or position.y ~= 0 or position.z ~= 0 or position.dir ~= position.NORTH then
+	print('Disclaimer - this is not mine')
+	print('Reset old position information?')
+	print('  0 - No, pretend I did not notice that (WARNING: unpredictable)')
+	print('  1 - Yes, delete old position information')
+	print('  2 - No, but take me back to 0, 0, 0 and face north.')
+	local choice = tonumber(io.read())
+	
+	if choice == 1 then
+		position.forget()
+	elseif choice == 2 then
+		pathfinding.goto(0, 0, 0)
+		move.face(position.NORTH)
+	elseif choice ~= 0 then
+		return
+	end
+end
 local function doColumn(height, colNum)
 	local desiredZ = colNum - 1
 	pathfinding.gotoZXY(desiredZ, 0, 0)
@@ -14,13 +32,13 @@ print('How long should the wall be?')
 local wallLength = tonumber(io.read())
 print('How High?')
 local wallHeight = tonumber(io.read())
-
-
 print('What should I do at the end?')
 print('0 - Stay at the top of the last column')
 print('1 - Go to the bottom of the last column')
 print('2 - Go back to the start')
 local endAction = tonumber(io.read())
+print('Forget position after? 1 or 0')
+local remPos = tonumber(io.read())
 
 local function gotoEndLoc(input, finalZ)
 	if input == 0 then
@@ -37,3 +55,4 @@ for i = 1, wallLength do
 	doColumn(wallHeight, i)
 end
 gotoEndLoc(endAction, wallLength - 1)
+if remPos == 1 then position.forget() end
