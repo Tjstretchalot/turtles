@@ -4,31 +4,34 @@ print('How many columns are there? (Including water and roots)')
 local colNumTotal = tonumber(io.read())
 print('How many rows?')
 local rowNumTotal = tonumber(io.read())
-local pumpkinChest = {x=0, y=0, z=1}
+local pumpkinChest = {x = -1, y = 0, z = 1}
+local melonChest = {x = 1, y = 0, z = 1}
 local function farmPumpkinColumn(colNum)
-	desiredX = colNum
+	desiredX = colNum - 1
 	pathfinding.gotoXZY(desiredX, 0, 0)
 	move.face(position.NORTH)
 	move.up(1)
 	for i = 1, rowNumTotal do
 		move.forward()
-		local success, blockName = turtle.inspectDown()
+		local success, data = turtle.inspectDown()
 		if success then
-			if blockName == 'minecraft:pumpkin' then
+			if data.name == 'minecraft:pumpkin' then
 			turtle.digDown()
-			elseif blockName == 'minecraft:melon' then
+			elseif data.name == 'minecraft:melon' then
 			turtle.digDown()
 			end
 		end
 	end
 end
-local function returnPumpkin()
+local function emptyInventory()
 	pathfinding.goto(pumpkinChest.x, pumpkinChest.y, pumpkinChest.z)
-	inventory.dumpInventory(nil, nil, turtle.dropDown)
+	inventory.dumpInventory(86, nil, turtle.dropDown)
+	pathfinding.goto(melonChest.x, melonChest.y, melonChest.z)
+	inventory.dumpInventory(360, nil, turtle.dropDown)
 end
 while true do
 	for i = 1, colNumTotal do
 		farmPumpkinColumn(i)
 	end
-	returnPumpkin()
+	emptyInventory()
 end
