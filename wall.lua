@@ -28,10 +28,23 @@ local function doColumn(height, colNum)
 		move.up()
 	end
 end
+local isGap = false
 print('How long should the wall be?')
 local wallLength = tonumber(io.read())
 print('How High?')
 local wallHeight = tonumber(io.read())
+print('Any gaps in the wall?(1 or 0)')
+if tonumber(io.read()) == 1 then
+	isGap = true
+	--print('How many?')
+	--local gapCount == tonumber(io.read())
+	print('How far to the first empty column?')
+	local distToGap = tonumber(io.read())
+	print('How wide?')
+	local gapSize = tonumber(io.read())
+	print('How tall?')
+	local gapHeight = tonumber(io.read())
+end
 print('What should I do at the end?')
 print('0 - Stay at the top of the last column')
 print('1 - Go to the bottom of the last column')
