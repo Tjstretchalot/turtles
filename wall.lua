@@ -18,17 +18,39 @@ if position.x ~= 0 or position.y ~= 0 or position.z ~= 0 or position.dir ~= posi
 		return
 	end
 end
-local function doColumn(height, colNum)
+local function isGapInColumn(colNum, distGap, gapSize)
+	if not distGap then return false end
+	if not gapSize then return false end
+	if colNum <= distGap then return false end
+	if colNum > distGap + gapSize then return false end
+	return true
+end
+local function doColumn(height, colNum, distGap, gapHeight, gapSize)
 	local desiredZ = colNum - 1
 	pathfinding.gotoZXY(desiredZ, 0, 0)
 	move.face(position.NORTH)
-	for i = 1, height do
-		inventory.selectItem('minecraft:stonebrick')
-		turtle.place()
-		move.up()
+	if isGapInColumn(colNum, distGap, gapSize) then
+		for i = 1, gapHeight do
+			move.up()
+		end
+		for i = 1, height - gapHeight do
+			inventory.selectItem('minecraft:stonebrick')
+			turtle.place()
+			move.up()
+		end
+	else
+		for i = 1, height do
+			inventory.selectItem('minecraft:stonebrick')
+			turtle.place()
+			move.up()
+		end
 	end
 end
+
 local isGap = false
+local distToGap = false
+local gapSize = false
+local gapHeight = false
 print('How long should the wall be?')
 local wallLength = tonumber(io.read())
 print('How High?')
@@ -36,14 +58,12 @@ local wallHeight = tonumber(io.read())
 print('Any gaps in the wall?(1 or 0)')
 if tonumber(io.read()) == 1 then
 	isGap = true
-	--print('How many?')
-	--local gapCount == tonumber(io.read())
 	print('How far to the first empty column?')
-	local distToGap = tonumber(io.read())
-	print('How wide?')
-	local gapSize = tonumber(io.read())
-	print('How tall?')
-	local gapHeight = tonumber(io.read())
+	distToGap = tonumber(io.read())
+	print('How wide is the gap?')
+	gapSize = tonumber(io.read())
+	print('How tall is the gap?')
+	gapHeight = tonumber(io.read())
 end
 print('What should I do at the end?')
 print('0 - Stay at the top of the last column')
@@ -52,7 +72,6 @@ print('2 - Go back to the start')
 local endAction = tonumber(io.read())
 print('Forget position after? 1 or 0')
 local remPos = tonumber(io.read())
-
 local function gotoEndLoc(input, finalZ)
 	if input == 0 then
 		return
@@ -63,9 +82,8 @@ local function gotoEndLoc(input, finalZ)
 		move.face(position.NORTH)
 	end
 end
-
 for i = 1, wallLength do
-	doColumn(wallHeight, i)
+	doColumn(wallHeight, i, distToGap, gapHeight, gapSize)
 end
 gotoEndLoc(endAction, wallLength - 1)
 if remPos == 1 then position.forget() end
