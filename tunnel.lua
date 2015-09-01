@@ -86,6 +86,8 @@ end
 ]]
 tunnel.doTunnel = function(width, height, length, placeFloor)
 	if width == 1 then 
+		turtle.dig()
+		move.forward()
 		tunnel.doColumnsForward(length, height, placeFloor)
 		return
 	end
