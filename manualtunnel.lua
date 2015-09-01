@@ -73,11 +73,13 @@ if config.comeback == 0 then config.comeback = false end
 if config.placeFloor == 0 then config.placeFloor = false end
 if config.detectCeiling == 0 then config.detectCeiling = false end
 
+local startPosition = {x = position.x, y = position.y, z = position.z, dir = position.dir}
+
 tunnel.config.floorType = config.floorType
 tunnel.config.detectCeiling = config.detectCeiling
 tunnel.doTunnel(config.width, config.height, config.length, config.placeFloor)
 
 if config.comeback then
-	pathfinding.goto(0, 0, 0)
-	move.face(position.NORTH)
+	pathfinding.goto(startPosition.x, startPosition.y, startPosition.z)
+	move.face(startPosition.dir)
 end

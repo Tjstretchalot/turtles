@@ -11,6 +11,9 @@ position.SOUTH = position.POSITIVE_Z
 position.NEGATIVE_X = 4 -- West
 position.WEST = position.NEGATIVE_X
 
+position.CLOCKWISE = 1
+position.COUNTERCLOCKWISE = -1
+
 position.x = 0
 position.y = 0
 position.z = 0
@@ -53,6 +56,33 @@ position.forget = function()
 	position.z = 0
 	position.dir = position.NORTH
 	position.save()
+end
+
+--[[
+	Returns a table containing the x offset and z offset caused
+	by moving in a particular direction
+]]
+position.getOffsetForDir = function(dir)
+	if dir == position.NEGATIVE_Z then
+		return {x = 0, z = -1}
+	elseif dir == position.POSITIVE_Z then
+		return {x = 0, z = 1}
+	elseif dir == position.NEGATIVE_X then
+		return {x = -1, z = 0}
+	elseif dir == position.POSITIVE_X then
+		return {x = 1, z = 0}
+	end
+	print('position.getOffsetForDir unexpected direction \''..tostring(dir)..'\'')
+end
+
+position.normalizeDir = function(dir)
+	if dir < 1 then 
+		return position.normalizeDir(dir + 4)
+	elseif dir > 4 then 
+		return position.normalizeDir(dir - 4) 
+	end
+	
+	return dir
 end
 
 position.description = function()
