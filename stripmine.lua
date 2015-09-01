@@ -2,19 +2,21 @@ dofile('tunnel.lua')
 
 local function goToColumn(colNum)
 	local neededDir = false
+	local desiredZ = 0
 	if colNum%2 == 1 then
 		neededDir = position.NORTH
-		local desiredZ = 0
+		desiredZ = 0
 	else
 		neededDir = position.SOUTH
-		desiredZ = 12
+		desiredZ = -12
 	end
 	local desiredX = 4 * (colNum - 1)
-	pathfinding.gotoXZY(desiredX, desiredZ, 0)
-	move.face(desiredDir)
+	print('Going to ' ..desiredX .. ', ' ..desiredZ)
+	pathfinding.gotoXZY(desiredX, 0, desiredZ)
+	move.face(neededDir)
 end
 local function goToRow(rowNum)
-	if rowNum%2 = 1 then
+	if rowNum % 2 == 1 then
 		desiredDir = position.WEST
 		desiredX = 12
 	else
@@ -26,9 +28,9 @@ local function goToRow(rowNum)
 	move.face(desiredDir)
 end
 local function doColumns(colNumTotal, height, length)
-	for i = 0, colNumTotal - 1 do
-	goToColumn(i)
-	tunnel.doTunnel(1, height, length)
+	for i = 1, colNumTotal do
+		goToColumn(i)
+		tunnel.doTunnel(1, height, length)
 	end
 end
 local function doRows(rowNumTotal, height, length)
@@ -37,4 +39,5 @@ local function doRows(rowNumTotal, height, length)
 		tunnel.doTunnel(1, height, length)
 	end
 end
-doColumns(1, 3, 9)
+doColumns(2, 3, 9)
+pathfinding.goto(0, 0, 0)
