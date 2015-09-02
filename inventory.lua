@@ -137,6 +137,7 @@ inventory.acquireItem = function(itemName, damage, count, suckFn, dropFn)
 			return
 		else
 			local amountToSuck = count - lastCount
+			if amountToSuck > 64 then amountToSuck = 64 end
 			suckFn(amountToSuck)
 			local newCount = inventory.countItem(itemName, damage)
 			if newCount == lastCount then 
@@ -155,6 +156,8 @@ inventory.acquireItem = function(itemName, damage, count, suckFn, dropFn)
 	while lastCount > count do
 		inventory.selectItem(itemName, damage)
 		local amountToDrop = lastCount - count
+		local dataOfCurSlot = turtle.getItemDetail()
+		if amountToDrop > dataOfCurSlot.count then amountToDrop = dataOfCurSlot.count end
 		dropFn(amountToDrop)
 		local newCount = inventory.countItem(itemName, damage)
 		if newCount == lastCount then
