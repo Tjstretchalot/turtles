@@ -89,7 +89,7 @@ local startPosition = {x = position.x, y = position.y, z = position.z, dir = pos
 
 tunnel.config.floorType = config.floorType
 tunnel.config.detectCeiling = config.detectCeiling
-tunnel.config.detectOre = config.detectOre
+tunnel.config.scanForOre = config.detectOre
 
 if config.dumpInventoryInChestWhenFull then
 	tunnel.onInventoryFull = function()
