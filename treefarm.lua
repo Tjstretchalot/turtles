@@ -1,6 +1,6 @@
 dofile('pathfinding.lua')
 dofile('inventory.lua')
-local desiredCount = 16
+local desiredCount = 16 --The number of saplings the turtle maintains
 local logChestLoc = {-1, 0, 1}
 local saplingChestLoc = {-3, 0, 1}
 local rowCount = 4

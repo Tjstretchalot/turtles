@@ -59,7 +59,7 @@ storage.isCommand = function(commandString)
 	return storage.isPingCommand(commandString) or storage.isStoreCommand(commandString) or storage.isRetrieveCommand(commandString) or storage.isListCommand(commandString) or storage.isSpaceCommand(commandString)
 end
 
-storage.argsAreValidForPingCommand = function(commandString)
+storage.argsAreValidForPingCommand = function(args)
 	return #args == 0
 end
 
@@ -92,15 +92,11 @@ storage.getRetrieveCommandUsingArgs = function(args)
 end
 
 storage.argsAreValidForListCommand = function(args)
-	return #args == 0 or #args == 1
+	return #args == 1
 end
 
 storage.getListCommandUsingArgs = function(args)
-	if #args == 0 then
-		return {command = storage.config.listCommand}
-	else
-		return {command = storage.config.listCommand, item = args[1]}
-	end
+	return {command = storage.config.listCommand, item = args[1]}
 end
 
 storage.argsAreValidForSpaceCommand = function(args)
