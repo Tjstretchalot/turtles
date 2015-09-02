@@ -30,10 +30,10 @@ local function readNum(default)
 	return tonumber(readStr(default))
 end
 local config = {
-rowCount = 3
-colCount = 3
-gapBetweenTrees = 3
-desiredSaplingCount = 16
+rowCount = 3,
+colCount = 3,
+gapBetweenTrees = 3,
+desiredSaplingCount = 16,
 }
 
 if fs.exists('manualtreefarm.dat') then
@@ -41,13 +41,13 @@ if fs.exists('manualtreefarm.dat') then
 	config = textutils.unserialize(f.readAll())
 	f.close()
 end
-print('How many rows of trees?')
+print('How many rows of trees?('..config.rowCount..')')
 config.rowCount = readNum(config.rowCount)
-print('How many columns?')
+print('How many columns?('..config.colCount..')')
 config.colCount = readNum(config.colCount)
-print('How many blocks between trees?')
+print('How many blocks between trees? ('..config.gapBetweenTrees..')')
 config.gapBetweenTrees = readNum(config.gapBetweenTrees)
-print('How many saplings should be maintained?')
+print('How many saplings should be maintained? ('..config.desiredSaplingCount..')')
 config.desiredSaplingCount = readNum(config.desiredSaplingCount)
 
 local f = fs.open('manualtreefarm.dat', 'w')
@@ -95,8 +95,8 @@ local function getSaplings(desiredCount)
 end
 
 while true do
-	for i = 1, rowCount do
-		for j = 1, colCount do
+	for i = 1, config.rowCount do
+		for j = 1, config.colCount do
 			gotoTree(i, j, config.gapBetweenTrees)
 			cutTree()
 			plantSapling()
