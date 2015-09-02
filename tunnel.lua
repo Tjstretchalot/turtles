@@ -152,7 +152,7 @@ tunnel.doTunnel = function(width, height, length, placeFloor)
 		-- Get 1 depth behind the starting position for this tunnels layer, facing towards increasing depth
 		pathfinding.goto(startX + offsetForDepth.x * (i-1) + offsetForBreadthStart.x * movementLeft, startY, startZ + offsetForDepth.z * (i-1) + offsetForBreadthStart.z * movementLeft)
 		move.face(startDir)
-		
+		tunnel.doColumn(height, placeFloor)
 		-- Get into the starting spot facing the right way
 		turtle.dig()
 		move.forward()
