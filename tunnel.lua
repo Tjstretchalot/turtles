@@ -1,6 +1,7 @@
 if tunnel then return end
 dofile('pathfinding.lua')
 dofile('inventory.lua')
+dofile('ore.lua')
 
 --[[
 	This provides highly methods of creating tunnels / strip mines
@@ -10,13 +11,25 @@ dofile('inventory.lua')
 tunnel = {}
 tunnel.config = {
 	floorType = 'minecraft:cobblestone',
-	detectCeiling = false
+	detectCeiling = false,
+	scanForOre = true,
+	stopOnFullInventory = true
 }
 
 tunnel.onNotEnoughFloor = function()
 	while not inventory.haveItem(tunnel.config.floorType) do
 		print('Not enough '..tunnel.config.floorType..' for floor!')
 		os.sleep(5)
+	end
+end
+
+tunnel.onInventoryFull = function()
+	print('Inventory full!')
+	
+	if tunnel.config.stopOnFullInventory then
+		while inventory.isFull() do
+			os.sleep(5)
+		end
 	end
 end
 
@@ -28,29 +41,51 @@ end
 	height     - how tall the column is above the turtles current position
 	placeFloor - if the floor should be placed below the turtle
 ]]
-tunnel.doColumn = function(height, placeFloor) 
+tunnel.doColumn = function(height, placeFloor)
+	if inventory.isFull() then
+		tunnel.onInventoryFull()
+	end
+	
+	if tunnel.config.scanForOre then
+		ore.digOutOre(turtle.inspectDown, turtle.digDown, move.down)
+	end
+	
 	if placeFloor then
-		if not inventory.haveItem(tunnel.config.floorType) then
-			tunnel.onNotEnoughFloor()
+		local succ, data = turtle.inspectDown()
+		if not succ then
+			if not inventory.haveItem(tunnel.config.floorType) then
+				tunnel.onNotEnoughFloor()
+			end
+			inventory.selectItem(tunnel.config.floorType)
+			turtle.placeDown()
 		end
-		inventory.selectItem(tunnel.config.floorType)
-		turtle.placeDown()
 	end
 	
 	local startingY = position.y
 	if tunnel.config.detectCeiling then
 		while turtle.detectUp() do
+			if tunnel.config.scanForOre then
+				ore.digOutOreLeftRight()
+			end
 			turtle.digUp()
 			move.up()
 		end
 	else
 		if height >= 2 then turtle.digUp() end
 		for i=3, height do 
+			if tunnel.config.scanForOre then
+				ore.digOutOreLeftRight()
+			end
 			move.up()
 			turtle.digUp()
 		end
 	end
-	
+	if tunnel.config.scanForOre then
+		ore.digOutOreLeftRight()
+		move.up()
+		ore.digOutOreLeftRight()
+		ore.digOutOre(turtle.inspectUp, turtle.digUp, move.up)
+	end
 	pathfinding.gotoY(startingY)
 end
 

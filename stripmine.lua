@@ -47,3 +47,5 @@ doColumns(totalColNumber + 1, totalRowNumber, 3)
 doRows(totalRowNumber, totalColNumber + 1, 3)
 pathfinding.goto(0, 0, 0)
 move.face(position.NORTH)
+
+

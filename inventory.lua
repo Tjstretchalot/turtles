@@ -11,6 +11,15 @@ inventory.isEmpty = function()
 	return true
 end
 
+inventory.isFull = function()
+	for i=1, 16 do
+		local data = turtle.getItemDetail(i)
+		
+		if not data then return false end
+	end
+	return true
+end
+
 --[[
 	Returns a table like such:
 	
