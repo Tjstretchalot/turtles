@@ -2,6 +2,52 @@ if inventory then return end
 
 inventory = {}
 
+inventory.isEmpty = function()
+	for i=1, 16 do
+		local data = turtle.getItemDetail(i)
+		
+		if data then return false end
+	end
+	return true
+end
+
+--[[
+	Returns a table like such:
+	
+	[
+		'minecraft:cobblestone': [ 1: 64, 4: 32],
+		'minecraft:stone': [2: 1]
+	]
+]]
+inventory.getItemsSortedByName = function()
+	local result = {}
+	for i=1, 16 do
+		local data = turtle.getItemDetail(i)
+		
+		if data then
+			if not result[data.name] then
+				result[data.name] = {}
+			end
+			result[data.name][i] = data.count
+		end
+	end
+	return result
+end
+
+inventory.itemCount = function()
+	local result = 0
+	
+	for i=1, 16 do
+		local data = turtle.getItemDetail(i)
+		
+		if data then
+			result = result + data.count
+		end
+	end
+	
+	return result
+end
+
 inventory.countItem = function(itemName, damage)
 	local count = 0
 	for i=1, 16 do 
@@ -31,6 +77,17 @@ inventory.selectItem = function(itemName, damage)
 				turtle.select(i)
 				return
 			end
+		end
+	end
+end
+
+inventory.selectEmpty = function()
+	for i=1, 16 do
+		local data = turtle.getItemDetail(i)
+		
+		if not data then
+			turtle.select(i)
+			return i
 		end
 	end
 end
@@ -69,17 +126,30 @@ inventory.acquireItem = function(itemName, damage, count, suckFn, dropFn)
 	dropFn = dropFn or turtle.drop
 	count = count or 1
 	
-	turtle.select(1)
+	local unrelatedThings = {}
+	
+	
 	local lastCount = inventory.countItem(itemName, damage)
 	while lastCount < count do
-		local amountToSuck = count - lastCount
-		suckFn(amountToSuck)
-		local newCount = inventory.countItem(itemName, damage)
-		if newCount == lastCount then 
-			print('Insufficient ' .. itemName .. ' from chest!')
-			os.sleep(5) 
+		local curSlot = inventory.selectEmpty()
+		if not curSlot then 
+			print('Out of inventory space for sorting!')
+			return
+		else
+			local amountToSuck = count - lastCount
+			suckFn(amountToSuck)
+			local newCount = inventory.countItem(itemName, damage)
+			if newCount == lastCount then 
+				local thingAcquiredData = turtle.getItemDetail(curSlot)
+				if thingAcquiredData then
+					unrelatedThings[#unrelatedThings + 1] = curSlot
+				else
+					print('Insufficient ' .. itemName .. ' from chest!')
+					os.sleep(5) 
+				end
+			end
+			lastCount = newCount
 		end
-		lastCount = newCount
 	end
 	
 	while lastCount > count do
@@ -92,5 +162,11 @@ inventory.acquireItem = function(itemName, damage, count, suckFn, dropFn)
 			os.sleep(5)
 		end
 		lastCount = newCount
+	end
+	
+	for i=1, #unrelatedThings do
+		local slotUnrelated = unrelatedThings[i]
+		turtle.select(slotUnrelated)
+		dropFn()
 	end
 end
