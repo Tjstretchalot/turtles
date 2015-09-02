@@ -59,7 +59,7 @@ storage.isCommand = function(commandString)
 	return storage.isPingCommand(commandString) or storage.isStoreCommand(commandString) or storage.isRetrieveCommand(commandString) or storage.isListCommand(commandString) or storage.isSpaceCommand(commandString)
 end
 
-storage.argsAreValidForPingCommand = function(commandString)
+storage.argsAreValidForPingCommand = function(args)
 	return #args == 0
 end
 
