@@ -1,6 +1,7 @@
 dofile('inventory.lua')
 dofile('pathfinding.lua')
-
+local logChestLoc = {-1, 0, 1}
+local saplingChestLoc = {-3, 0, 1}
 if position.x ~= 0 or position.y ~= 0 or position.z ~= 0 or position.dir ~= position.NORTH then
 	print('Disclaimer - this is not mine')
 	print('Reset old position information?')
@@ -103,7 +104,7 @@ while true do
 		end
 	end
 	returnLogs()
-	getSaplings(desiredSaplingCount)
+	getSaplings(config.desiredSaplingCount)
 	pathfinding.goto(0, 0, 0)
 	move.face(position.NORTH)
 	os.sleep(30)
