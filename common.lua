@@ -1,4 +1,6 @@
 if common then return end
+dofile('position.lua')
+
 common = {}
 
 if not string.split then 
@@ -85,5 +87,52 @@ io.readStr = function(default)
 end
 
 io.readNum = function(default)
-	return tonumber(readStr(default))
+	return tonumber(io.readStr(default))
+end
+
+--[[
+	This can be used as a method of acquiring the <index> block from a square room
+	with the startPos being on the bottom - left of the square, depth going in the 
+	direction of the startPos.dir, and the width going in the direction clockwise
+	of startPos.dir
+	
+	This increments in a manner that is useful for positioning turtles - i.e. the next block will
+	be 1 block away from the turtle.
+	
+	Starts going width, then 1 depth and returning in the opposite direction. E.g.
+	
+	|--|--|--|
+	|->|->|EN|
+	|--|--|--|
+	|^^|<-|<-|
+	|--|--|--|
+	|ST|->|^^|
+	|--|--|--|
+	
+	startPos - Starting position info. Ex: {x = 0, y = 0, z = 0, dir = position.NORTH}
+	width - the width of the square room.
+	index - Starts at 1, increment to get next position
+	
+	returns - x,z tupple. e.g. {x = 0, z = 0}
+]]
+common.getNextXZInSquareRoom = function(startPos, width, index)
+	-- Break down index to get the row
+	
+	local row = math.floor((index - 1) / width)
+	local colOffset = (index - 1) % width 
+	
+	local distanceDepth = row
+	local distanceBreadth = -1
+	if row % 2 == 0 then
+		-- Started on left heading right.
+		distanceBreadth = colOffset
+	else
+		-- Started on right heading left.
+		distanceBreadth = width - colOffset - 1 
+	end
+	
+	local depthOffset = position.getOffsetForDir(startPos.dir)
+	local breadthOffset = position.getOffsetForDir(position.normalizeDir(startPos.dir + position.CLOCKWISE))
+	
+	return {x = startPos.x + breadthOffset.x * distanceBreadth + depthOffset.x * distanceDepth, z = startPos.z + breadthOffset.z * distanceBreadth + depthOffset.z * distanceDepth}
 end

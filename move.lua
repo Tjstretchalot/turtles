@@ -84,7 +84,10 @@ end
 
 move.face = function(dir)
 	if position.dir == dir then return end
-	
+	if not dir or dir < 1 or dir > 4 then 
+		print('INVALID DIRECTION: ' .. tostring(dir))
+		return
+	end
 	local turnsIfCounterClockwise = 0
 	local simDir = position.dir
 	while simDir ~= dir do

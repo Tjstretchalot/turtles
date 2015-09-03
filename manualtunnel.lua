@@ -6,7 +6,7 @@ if position.x ~= 0 or position.y ~= 0 or position.z ~= 0 or position.dir ~= posi
 	print('  0 - No, pretend I did not notice that (WARNING: unpredictable)')
 	print('  1 - Yes, delete old position information')
 	print('  2 - No, but take me back to 0, 0, 0 and face north.')
-	local choice = readNum(1)
+	local choice = io.readNum(1)
 	
 	if choice == 1 then
 		position.forget()
@@ -45,7 +45,7 @@ config.comeback = io.readNum(config.comeback)
 print('If inventory fills, what should we do? ('..tostring(config.dumpInventoryInChestWhenFull)..')')
 print('  0 - Hang until you empty it')
 print('  1 - Dump it behind my current position')
-config.dumpInventoryInChestWhenFull = readNum(config.dumpInventoryInChestWhenFull)
+config.dumpInventoryInChestWhenFull = io.readNum(config.dumpInventoryInChestWhenFull)
 print('Place floor? ('..tostring(config.placeFloor)..')')
 config.placeFloor = io.readNum(config.placeFloor)
 print('Floor type? ('..config.floorType..')')

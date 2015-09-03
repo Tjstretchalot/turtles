@@ -4,32 +4,75 @@
 
 dofile('tunnel.lua')
 dofile('common.lua')
+dofile('ore.lua')
 
 local config = {
 	width = 32,
-	length = 32
+	length = 32,
+	avoidTorches = 1,
+	placeFloor = 1,
+	floorType = 'minecraft:cobblestone',
+	comeback = 1
 }
 
 config = common.unserializeFromFile('floor_scanner.dat', config)
 
-print('Width: (' .. config.width .. ')')
+print('Width: ('..config.width..')')
 config.width = io.readNum(config.width)
-print('Length: (' .. config.length .. ')')
+print('Length: ('..config.length..')')
 config.length = io.readNum(config.length)
+print('Avoid torches? ('..config.avoidTorches..')')
+config.avoidTorches = io.readNum(config.avoidTorches)
+print('Place floor? ('..config.placeFloor..')')
+config.placeFloor = io.readNum(config.placeFloor)
+print('Floor type? ('..config.floorType..')')
+config.floorType = io.readStr(config.floorType)
+print('Come home after? ('..config.comeback..')')
+config.comeback = io.readNum(config.comeback)
 
 common.serializeToFile('floor_scanner.dat', config)
 
-local startDir = position.dir
-local leftDir = position.normalizeDir(startDir + position.COUNTERCLOCKWISE)
-local rightDir = position.normalizeDir(startDir + position.CLOCKWISE)
+if config.avoidTorches == 0 then config.avoidTorches = false end
+if config.placeFloor == 0 then config.placeFloor = false end
+if config.comeback == 0 then config.comeback = false end
 
-local depthOffset = position.getOffsetFromDir(startDir)
-local curDir = leftDir
+local startPos = {x = position.x, y = position.y, z = position.z, dir = position.dir}
 
-for depth = 1, config.length do
-	local curDirOffset = position.getOffsetFromDir(curDir)
-	pathfinding.goto(x + 
-	for breadth = 1, config.width do
-			
+local avoidedLast = false
+local function handleNextSpot(i)
+	local xz = common.getNextXZInSquareRoom(startPos, config.width, i)
+	if position.x == xz.x and position.z == xz.z then
+		return
 	end
+	
+	local isTorchAndShouldAvoid = false
+	if config.avoidTorches and not avoidedLast then
+		move.face(position.dirTowards(xz.x, xz.z))
+		local succ, data = turtle.inspect()
+		if succ then
+			isTorchAndShouldAvoid = data.name == 'minecraft:torch'
+		end
+	end
+	
+	if isTorchAndShouldAvoid then
+		pathfinding.gotoYXZ(xz.x, startPos.y + 1, xz.z)
+	else
+		pathfinding.gotoXZY(xz.x, startPos.y, xz.z)
+		ore.digOutOre(turtle.inspectDown, turtle.digDown, move.down)
+		
+		if config.placeFloor then
+			inventory.selectItem(config.floorType)
+			turtle.placeDown()
+		end
+	end
+	avoidedLast = isTorchAndShouldAvoid
+end
+
+for i = 1, (config.width * config.length) do
+	handleNextSpot(i)
+end
+
+if config.comeback then
+	pathfinding.gotoXZY(startPos.x, startPos.y, startPos.z)
+	move.face(startPos.dir)
 end

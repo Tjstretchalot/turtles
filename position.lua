@@ -89,4 +89,17 @@ position.description = function()
 	return '(' .. position.x .. ', ' .. position.y .. ', ' .. position.z .. ') dir: ' .. position.directionToString(position.dir)
 end
 
+--[[
+	Gets the direction towards the specified x, z.
+	
+	Only unique if the block is only 1 movement away.
+	Returns nil if its the same spot.
+]]
+position.dirTowards = function(towardsX, towardsZ)
+	if towardsX < position.x then return position.NEGATIVE_X
+	elseif towardsX > position.x then return position.POSITIVE_X
+	elseif towardsZ < position.z then return position.NEGATIVE_Z
+	elseif towardsZ > position.z then return position.POSITIVE_Z end
+end
+
 position.load()
