@@ -1,10 +1,19 @@
 dofile('pathfinding.lua')
 dofile('inventory.lua')
-local desiredCount = 16 --The number of saplings the turtle maintains
+local config = {
+rowCount = 3,
+colCount = 3,
+gapBetweenTrees = 3,
+desiredSaplingCount = 16,
+}
 local logChestLoc = {-1, 0, 1}
 local saplingChestLoc = {-3, 0, 1}
-local rowCount = 4
-local colCount = 3
+
+if fs.exists('manualtreefarm.dat') then
+	local f = fs.open('manualtreefarm.dat', 'r')
+	config = textutils.unserialize(f.readAll())
+	f.close()
+end
 local function isTree()
 	local success, data = turtle.inspect()
 	if success then
@@ -24,9 +33,9 @@ local function cutTree()
 	pathfinding.gotoY(curY)
 	move.back()
 end
-local function gotoTree(i, k)
-	local desiredX = i * 4 - 4
-	local desiredZ = -k * 4
+local function gotoTree(i, k, gapBetweenTrees)
+	local desiredX = i * (gapBetweenTrees + 1) - (gapBetweenTrees + 1)
+	local desiredZ = -k * (gapBetweenTrees + 1)
 	pathfinding.gotoXZY(desiredX + 1, position.y, desiredZ + 1)
 	pathfinding.gotoXZY(desiredX, position.y, desiredZ + 1)
 	move.face(position.NORTH)
@@ -39,23 +48,22 @@ local function plantSapling()
 	inventory.selectItem('minecraft:sapling', nil)
 	turtle.place()
 end
-local function getSaplings()
+local function getSaplings(desiredCount)
 	pathfinding.goto(saplingChestLoc[1], saplingChestLoc[2], saplingChestLoc[3])
 	inventory.acquireItem('minecraft:sapling', 2, desiredCount, turtle.suckDown, turtle.dropDown)
 end
 
 while true do
-	for i = 1, rowCount do
-		for j = 1, colCount do
-			gotoTree(i, j)
+	for i = 1, config.rowCount do
+		for j = 1, config.colCount do
+			gotoTree(i, j, config.gapBetweenTrees)
 			cutTree()
 			plantSapling()
 		end
 	end
 	returnLogs()
-	getSaplings()
+	getSaplings(config.desiredSaplingCount)
 	pathfinding.goto(0, 0, 0)
 	move.face(position.NORTH)
 	os.sleep(30)
 end
-
