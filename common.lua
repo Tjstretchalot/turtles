@@ -46,3 +46,44 @@ common.splitCommandAndArgsFromString = function(str)
 	
 	return exploded[1], args
 end
+
+common.serializeToFile = function(fileName, tab) 
+	local f = fs.open(fileName, 'w')
+	f.write(textutils.serialize(tab))
+	f.close()
+end
+
+common.unserializeFromFile = function(fileName, defaults)
+	local result = {}
+	if not fs.exists('manualtunnel.dat') then
+		for key, value in pairs(defaults) do
+			result[key] = value
+		end
+		return result
+	end
+	
+	local f = fs.open('manualtunnel.dat', 'r')
+	local saved = textutils.unserialize(f.readAll())
+	f.close()
+	
+	for key, value in pairs(defaults) do
+		result[key] = value
+	end
+	for key, value in pairs(saved) do
+		result[key] = value
+	end
+	return result
+end
+
+
+io.readStr = function(default)
+	local choice = io.read()
+	if string.len(choice) > 0 then
+		return choice
+	end
+	return default
+end
+
+io.readNum = function(default)
+	return tonumber(readStr(default))
+end

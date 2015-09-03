@@ -82,8 +82,10 @@ tunnel.doColumn = function(height, placeFloor)
 	end
 	if tunnel.config.scanForOre then
 		ore.digOutOreLeftRight()
-		move.up()
-		ore.digOutOreLeftRight()
+		if height >= 2 then
+			move.up()
+			ore.digOutOreLeftRight()
+		end
 		ore.digOutOre(turtle.inspectUp, turtle.digUp, move.up)
 	end
 	pathfinding.gotoY(startingY)
