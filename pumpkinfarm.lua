@@ -6,13 +6,12 @@ print('How many rows?')
 local rowNumTotal = tonumber(io.read())
 local pumpkinChest = {x = -1, y = 0, z = 1}
 local melonChest = {x = 1, y = 0, z = 1}
-local function farmPumpkinColumn(colNum)
-	desiredX = colNum - 1
-	pathfinding.gotoXZY(desiredX, 0, 0)
-	move.face(position.NORTH)
-	move.up(1)
+
+local startPos = {x=0, y=0, z=0, dir=position.NORTH}
+local function farmPumpkinColumn(index)
 	for i = 1, rowNumTotal do
-		move.forward()
+		local xz = common.getNextXZInSquareRoom(startPos, rowNumTotal, colNumTotal)
+		pathfinding.gotoYXZ(xz.x, startPos.y + 1, xz.z)
 		local success, data = turtle.inspectDown()
 		if success then
 			if data.name == 'minecraft:pumpkin' then
