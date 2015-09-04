@@ -94,7 +94,9 @@ local function getSaplings(desiredCount)
 	pathfinding.goto(saplingChestLoc[1], saplingChestLoc[2], saplingChestLoc[3])
 	inventory.acquireItem('minecraft:sapling', 2, desiredCount, turtle.suckDown, turtle.dropDown)
 end
-
+local f = fs.open('startup', 'w')
+f.write("dofile('treefarm.lua')")
+f.close()
 while true do
 	for i = 1, config.rowCount do
 		for j = 1, config.colCount do
