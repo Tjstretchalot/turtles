@@ -16,7 +16,7 @@ local function harvestFoodBelowMe()
 		replantMe = true
 	elseif data.name == 'minecraft:wheat' and data.metadata == 7 then
 		replantMe = true
-	elseif data.name == 'minecraft:carrot' and data.metadata == 7 then
+	elseif data.name == 'minecraft:carrots' and data.metadata == 7 then
 		replantMe = true
 	end
 	

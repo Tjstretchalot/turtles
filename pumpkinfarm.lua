@@ -1,16 +1,16 @@
 dofile('pathfinding.lua')
 dofile('inventory.lua')
 dofile('common.lua')
-print('How many columns are there? (Including water and roots)')
-local colNumTotal = tonumber(io.read())
-print('How many rows?')
-local rowNumTotal = tonumber(io.read())
-local pumpkinChest = {x = -1, y = 0, z = 1}
-local melonChest = {x = 1, y = 0, z = 1}
 
-local startPosSquare = {x=0, y=1, z=-1, dir=position.NORTH}
+local rowNumTotal = 9
+local colNumTotal = 7
+
+local pumpkinChest = {x = -2, y = -1, z = 1}
+local melonChest = {x = 2, y = -1, z = 1}
+
+local startPosSquare = {x=-3, y=1, z=-1, dir=position.NORTH}
 local function farmPumpkin(index)
-	local xz = common.getNextXZInSquareRoom(startPosSquare, rowNumTotal, index)
+	local xz = common.getNextXZInSquareRoom(startPosSquare, colNumTotal, index)
 	pathfinding.gotoYXZ(xz.x, startPosSquare.y, xz.z)
 	local success, data = turtle.inspectDown()
 	if success then
@@ -22,9 +22,9 @@ local function farmPumpkin(index)
 	end
 end
 local function emptyInventory()
-	pathfinding.goto(pumpkinChest.x, pumpkinChest.y, pumpkinChest.z)
+	pathfinding.goto(pumpkinChest.x, pumpkinChest.y + 1, pumpkinChest.z)
 	inventory.dumpInventory('minecraft:pumpkin', nil, turtle.dropDown)
-	pathfinding.goto(melonChest.x, melonChest.y, melonChest.z)
+	pathfinding.goto(melonChest.x, melonChest.y + 1, melonChest.z)
 	inventory.dumpInventory('minecraft:melon', nil, turtle.dropDown)
 end
 
@@ -33,4 +33,5 @@ while true do
 		farmPumpkin(i)
 	end
 	emptyInventory()
+	os.sleep(30)
 end
