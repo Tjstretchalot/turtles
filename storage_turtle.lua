@@ -123,9 +123,12 @@ local function dumpItem(item)
 end
 
 local function acquireItem(item, quantity, damage)
+	local chestObj = findChestWithItem(item, quantity)
+	if not chestObj then 
+		return
+	end
 	gotoChestRoom()
 	
-	local chestObj = findChestWithItem(item, quantity)
 	gotoChest(chestObj)
 	
 	inventory.acquireItem(item, damage, quantity)
