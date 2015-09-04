@@ -160,6 +160,10 @@ inventory.acquireItem = function(itemName, damage, count, suckFn, dropFn)
 			end
 			lastCount = newCount
 		end
+		
+		if lastCount < count then
+			inventory.combineStacks()
+		end
 	end
 	
 	while lastCount > count do
