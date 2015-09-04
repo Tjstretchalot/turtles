@@ -1,3 +1,6 @@
+if wall then return end
+wall = {}
+
 dofile('inventory.lua')
 dofile('pathfinding.lua')
 dofile('common.lua')
@@ -33,7 +36,7 @@ local function doColumn(height, colNum, distGap, gapHeight, gapSize)
 	pathfinding.gotoXZY(startPos.x, startPos.y, startPos.z)
 end
 
-doWall = function(height, length, gapSize, distToGap, gapHeight)
+wall.doWall = function(height, length, gapSize, distToGap, gapHeight)
 	for i = 1, length do
 		doColumn(height, i, distToGap, gapHeight, gapSize)
 	end
