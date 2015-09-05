@@ -84,7 +84,7 @@ inventory.selectItem = function(itemName, damage)
 		if data then
 			if data.name == itemName and (not damage or damage == data.damage) then
 				turtle.select(i)
-				return
+				return i
 			end
 		end
 	end
