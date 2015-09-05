@@ -1,7 +1,16 @@
 dofile('pathfinding.lua')
 dofile('inventory.lua')
 dofile('wall.lua')
-
+local config = {
+isGap = false
+distGap = false
+gapHeight = false
+gapSize = false
+endAction = 1
+forgetPos = 0
+buildMaterial = 'minecraft:stonebrick'
+}
+config = common.unserializeFromFile('wall.dat', config)
 if position.x ~= 0 or position.y ~= 0 or position.z ~= 0 or position.dir ~= position.NORTH then
 	print('Disclaimer - this is not mine')
 	print('Reset old position information?')
@@ -48,41 +57,39 @@ local function doColumn(height, colNum, distGap, gapHeight, gapSize)
 	end
 end
 
-local isGap = false
-local distToGap = false
-local gapSize = false
-local gapHeight = false
 print('How long should the wall be?')
-local wallLength = tonumber(io.read())
+config.wallLength = io.readNum(config.wallLength)
 print('How High?')
-local wallHeight = tonumber(io.read())
+config.wallHeight = io.readNum(config.wallHeight)
 print('Any gaps in the wall?(1 or 0)')
 if tonumber(io.read()) == 1 then
-	isGap = true
 	print('How far to the first empty column?')
-	distToGap = tonumber(io.read())
+	config.distGap = io.readNum(config.distGap)
 	print('How wide is the gap?')
-	gapSize = tonumber(io.read())
+	config.gapSize = io.readNum(config.gapSize)
 	print('How tall is the gap?')
-	gapHeight = tonumber(io.read())
+	config.gapHeight = io.readNum(config.gapHeight)
 end
 print('What should I do at the end?')
 print('0 - Stay at the top of the last column')
 print('1 - Go to the bottom of the last column')
 print('2 - Go back to the start')
-local endAction = tonumber(io.read())
+config.endAction = io.readNum(config.readNum)
 print('Forget position after? 1 or 0')
-local remPos = tonumber(io.read())
-local function gotoEndLoc(input, finalZ)
+config.forgetPos = io.readNum(io.forgetPos)
+print('What should it be made with?')
+config.buildMaterial = io.readNum(config.buildMaterial)
+local function gotoEndLoc(input, finalX)
 	if input == 0 then
 		return
 	elseif input == 1 then
-		pathfinding.gotoZXY(finalZ, 0, 0)
+		pathfinding.gotoZXY(finalX, 0, 0)
 	else
 		pathfinding.goto(0, 0, 0)
 		move.face(position.NORTH)
 	end
 end
+
 wall.doWall(wallHeight, wallLength, gapSize, distToGap, gapHeight)
 gotoEndLoc(endAction, wallLength - 1)
 if remPos == 1 then position.forget() end
