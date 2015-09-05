@@ -57,14 +57,14 @@ end
 
 common.unserializeFromFile = function(fileName, defaults)
 	local result = {}
-	if not fs.exists('manualtunnel.dat') then
+	if not fs.exists(fileName) then
 		for key, value in pairs(defaults) do
 			result[key] = value
 		end
 		return result
 	end
 	
-	local f = fs.open('manualtunnel.dat', 'r')
+	local f = fs.open(fileName, 'r')
 	local saved = textutils.unserialize(f.readAll())
 	f.close()
 	

@@ -6,6 +6,7 @@ move = {}
 local function myMove(times, moveFn, updatePosFn)
 	local digFn = false
 	if moveFn == turtle.up then digFn = turtle.digUp
+	elseif moveFn == turtle.down then digFn = turtle.digDown
 	elseif moveFn == turtle.forward then digFn = turtle.dig end
 	
 	times = times or 1

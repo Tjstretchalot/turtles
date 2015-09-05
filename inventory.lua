@@ -24,8 +24,8 @@ end
 	Returns a table like such:
 	
 	[
-		'minecraft:cobblestone': [ 1: 64, 4: 32],
-		'minecraft:stone': [2: 1]
+		'minecraft:cobblestone': [total=96, 1=64, 4=32],
+		'minecraft:stone': [total=1, 2=1]
 	]
 ]]
 inventory.getItemsSortedByName = function()
@@ -36,9 +36,48 @@ inventory.getItemsSortedByName = function()
 		if data then
 			if not result[data.name] then
 				result[data.name] = {}
+				result[data.name].total = 0
 			end
 			result[data.name][i] = data.count
+			result[data.name].total = result[data.name].total + data.count
 		end
+	end
+	return result
+end
+
+--[[
+	Returns a table like such:
+	
+	[
+		[name='minecraft:cobblestone', total=96],
+		[name='minecraft:stone', total=84]
+	]
+]]
+inventory.getItemsSortedByQuantity = function()
+	local byName = inventory.getItemsSortedByName()
+	local result = {}
+	-- Step 1: fix style, strip indexes
+	for key,value in pairs(byName) do
+		local fixStyle = {}
+		fixStyle.name = key
+		fixStyle.total = value.total
+		result[#result + 1] = fixStyle
+	end
+	-- Step 2: Select sort
+	for i=1, #result do
+		local maxIndex = i
+		local maxVal = result[i]
+		
+		for j=i+1, #result do
+			local altVal = result[j]
+			if altVal.total > maxVal.total then
+				maxIndex = j
+				maxVal = altVal
+			end
+		end
+		local tempSwap = result[i]
+		result[i] = result[maxIndex]
+		result[maxIndex] = tempSwap
 	end
 	return result
 end

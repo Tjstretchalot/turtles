@@ -12,6 +12,11 @@ local config = {
 	forgetPos = 0,
 	buildMaterial = 'minecraft:stonebrick'
 }
+local items = inventory.getItemsSortedByQuantity()
+if #items > 0 then
+	config.buildMaterial = items[1].name
+end
+
 config = common.unserializeFromFile('wall.dat', config)
 
 print('How long should the wall be? ('..tostring(config.wallLength)..')')
@@ -50,8 +55,8 @@ local startPos = {x=position.x, y=position.y, z=position.z, dir=position.dir}
 wall.doWall(config.wallHeight, config.wallLength, config.isGap, config.gapSize, config.distGap, config.gapHeight)
 
 
-if config.forgetPos then position.forget() end
 if config.homeAtEnd then
 	pathfinding.goto(startPos.x, startPos.y, startPos.z)
 	move.face(startPos.dir)
 end
+if config.forgetPos then position.forget() end
