@@ -6,10 +6,10 @@ colCount = 3,
 gapBetweenTrees = 3,
 desiredSaplingCount = 16,
 logName == 'minecraft:log',
-saplingName == 'minecraft:sapling',
+saplingName == 'minecraft:sapling'
 }
-local logChestLoc = {-1, 0, 1}
-local saplingChestLoc = {-3, 0, 1}
+local logChestLoc = {1, 0, 1}
+local saplingChestLoc = {-1, 0, 1}
 
 if fs.exists('manualtreefarm.dat') then
 	local f = fs.open('manualtreefarm.dat', 'r')
@@ -19,7 +19,7 @@ end
 local function isTree()
 	local success, data = turtle.inspect()
 	if success then
-		if data.name == logName then return true end
+		if data.name == config.logName then return true end
 	end
 	return false
 end
@@ -35,7 +35,7 @@ local function cutTree()
 	pathfinding.gotoY(curY)
 	move.back()
 end
-local function gotoTree(i, k, gapBetweenTrees)
+local function gotoTree(i, k, gapBetweenTrees) --Assumes the turtle is in the bottom left corner
 	local desiredX = i * (gapBetweenTrees + 1) - (gapBetweenTrees + 1)
 	local desiredZ = -k * (gapBetweenTrees + 1)
 	pathfinding.gotoXZY(desiredX + 1, position.y, desiredZ + 1)
@@ -44,15 +44,15 @@ local function gotoTree(i, k, gapBetweenTrees)
 end
 local function returnLogs()
 	pathfinding.goto(logChestLoc[1], logChestLoc[2], logChestLoc[3])
-	inventory.dumpInventory(logName, nil, turtle.dropDown)
+	inventory.dumpInventory(config.logName, nil, turtle.dropDown)
 end
 local function plantSapling()
-	inventory.selectItem(saplingName, nil)
+	inventory.selectItem(config.saplingName, nil)
 	turtle.place()
 end
 local function getSaplings(desiredCount)
 	pathfinding.goto(saplingChestLoc[1], saplingChestLoc[2], saplingChestLoc[3])
-	inventory.acquireItem(saplingName, 2, desiredCount, turtle.suckDown, turtle.dropDown)
+	inventory.acquireItem(config.saplingName, nil, desiredCount, turtle.suckDown, turtle.dropDown)
 end
 
 while true do

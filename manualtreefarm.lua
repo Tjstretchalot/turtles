@@ -36,7 +36,7 @@ colCount = 3,
 gapBetweenTrees = 3,
 desiredSaplingCount = 16,
 logName = 'minecraft:log',
-saplingName = 'minecraft:sapling',
+saplingName = 'minecraft:sapling'
 }
 
 if fs.exists('manualtreefarm.dat') then
@@ -65,7 +65,7 @@ f.close()
 local function isTree()
 	local success, data = turtle.inspect()
 	if success then
-		if data.name == tostring(logName) then return true end
+		if data.name == config.logName then return true end
 	end
 	return false
 end
@@ -90,19 +90,19 @@ local function gotoTree(i, k, gapBetweenTrees) --Assumes the turtle is in the bo
 end
 local function returnLogs()
 	pathfinding.goto(logChestLoc[1], logChestLoc[2], logChestLoc[3])
-	inventory.dumpInventory(tostring(logName), nil, turtle.dropDown)
+	inventory.dumpInventory(config.logName, nil, turtle.dropDown)
 end
 local function plantSapling()
-	inventory.selectItem(tostring(saplingName), nil)
+	inventory.selectItem(config.saplingName, nil)
 	turtle.place()
 end
 local function getSaplings(desiredCount)
 	pathfinding.goto(saplingChestLoc[1], saplingChestLoc[2], saplingChestLoc[3])
-	inventory.acquireItem(tostring(saplingName), nil, desiredCount, turtle.suckDown, turtle.dropDown)
+	inventory.acquireItem(config.saplingName, nil, desiredCount, turtle.suckDown, turtle.dropDown)
 end
---local f = fs.open('startup', 'w')
---f.write("dofile('treefarm.lua')")
---f.close()
+local f = fs.open('startup', 'w')
+f.write("dofile('treefarm.lua')")
+f.close()
 while true do
 	for i = 1, config.rowCount do
 		for j = 1, config.colCount do
