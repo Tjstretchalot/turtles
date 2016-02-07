@@ -1,7 +1,7 @@
 dofile('inventory.lua')
 dofile('pathfinding.lua')
-local logChestLoc = {-1, 0, 1} --left 1, back 1
-local saplingChestLoc = {-3, 0, 1} --left 3, back 1
+local logChestLoc = {1, 0, 1} --right 1, back 1
+local saplingChestLoc = {-1, 0, 1} --left 1, back 1
 if position.x ~= 0 or position.y ~= 0 or position.z ~= 0 or position.dir ~= position.NORTH then
 	print('Disclaimer - this is not mine')
 	print('Reset old position information?')
