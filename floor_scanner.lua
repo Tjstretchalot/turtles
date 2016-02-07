@@ -12,6 +12,7 @@ local config = {
 	avoidTorches = 1,
 	placeFloor = 1,
 	floorType = 'minecraft:cobblestone',
+	ensureFloorType = 0,
 	comeback = 1
 }
 
@@ -27,6 +28,8 @@ print('Place floor? ('..config.placeFloor..')')
 config.placeFloor = io.readNum(config.placeFloor)
 print('Floor type? ('..config.floorType..')')
 config.floorType = io.readStr(config.floorType)
+print('Ensure floor type? ('..config.ensureFloorType..')')
+config.ensureFloorType = io.readNum(config.ensureFloorType)
 print('Come home after? ('..config.comeback..')')
 config.comeback = io.readNum(config.comeback)
 
@@ -35,6 +38,7 @@ common.serializeToFile('floor_scanner.dat', config)
 if config.avoidTorches == 0 then config.avoidTorches = false end
 if config.placeFloor == 0 then config.placeFloor = false end
 if config.comeback == 0 then config.comeback = false end
+if config.ensureFloorType == 0 then config.ensureFloorType = false end
 
 local startPos = {x = position.x, y = position.y, z = position.z, dir = position.dir}
 
@@ -59,6 +63,16 @@ local function handleNextSpot(i)
 	else
 		pathfinding.gotoXZY(xz.x, startPos.y, xz.z)
 		ore.digOutOre(turtle.inspectDown, turtle.digDown, move.down)
+		
+		if config.ensureFloorType then
+			local succ, data = turtle.inspectDown()
+			
+			if succ then
+				if data.name ~= config.floorType then
+					turtle.digDown()
+				end
+			end
+		end
 		
 		if config.placeFloor then
 			inventory.selectItem(config.floorType)

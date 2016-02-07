@@ -6,8 +6,13 @@ move = {}
 local function myMove(times, moveFn, updatePosFn)
 	local digFn = false
 	if moveFn == turtle.up then digFn = turtle.digUp
+<<<<<<< HEAD
 	elseif moveFn == turtle.forward then digFn = turtle.dig 
   elseif moveFn == turtle.down then digFn = turtle.digDown end
+=======
+	elseif moveFn == turtle.down then digFn = turtle.digDown
+	elseif moveFn == turtle.forward then digFn = turtle.dig end
+>>>>>>> origin/master
 	
 	times = times or 1
 	
