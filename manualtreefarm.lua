@@ -52,9 +52,9 @@ print('How many blocks between trees? ('..config.gapBetweenTrees..')')
 config.gapBetweenTrees = readNum(config.gapBetweenTrees)
 print('How many saplings should be maintained? ('..config.desiredSaplingCount..')')
 config.desiredSaplingCount = readNum(config.desiredSaplingCount)
-print('What type of log should be farmed? Use IDs, like minecraft:log ('..config.logName..')')
+print('What type of log should be farmed? Use IDs, like minecraft:log ('..tostring(config.logName)..')')
 config.logName = readStr(config.logName)
-print('What is the ID of the sapling? Again, use IDs ('..config.saplingName..')')
+print('What is the ID of the sapling? Again, use IDs ('..tostring(config.saplingName)..')')
 config.saplingName = readStr(config.saplingName)
 
 local f = fs.open('manualtreefarm.dat', 'w')
@@ -65,7 +65,7 @@ f.close()
 local function isTree()
 	local success, data = turtle.inspect()
 	if success then
-		if data.name == logName then return true end
+		if data.name == tostring(logName) then return true end
 	end
 	return false
 end
@@ -90,19 +90,19 @@ local function gotoTree(i, k, gapBetweenTrees) --Assumes the turtle is in the bo
 end
 local function returnLogs()
 	pathfinding.goto(logChestLoc[1], logChestLoc[2], logChestLoc[3])
-	inventory.dumpInventory(logName, nil, turtle.dropDown)
+	inventory.dumpInventory(tostring(logName), nil, turtle.dropDown)
 end
 local function plantSapling()
-	inventory.selectItem(saplingName, nil)
+	inventory.selectItem(tostring(saplingName), nil)
 	turtle.place()
 end
 local function getSaplings(desiredCount)
 	pathfinding.goto(saplingChestLoc[1], saplingChestLoc[2], saplingChestLoc[3])
-	inventory.acquireItem(saplingName, 2, desiredCount, turtle.suckDown, turtle.dropDown)
+	inventory.acquireItem(tostring(saplingName), nil, desiredCount, turtle.suckDown, turtle.dropDown)
 end
-local f = fs.open('startup', 'w')
-f.write("dofile('treefarm.lua')")
-f.close()
+--local f = fs.open('startup', 'w')
+--f.write("dofile('treefarm.lua')")
+--f.close()
 while true do
 	for i = 1, config.rowCount do
 		for j = 1, config.colCount do

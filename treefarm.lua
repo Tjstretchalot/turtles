@@ -5,8 +5,8 @@ rowCount = 3,
 colCount = 3,
 gapBetweenTrees = 3,
 desiredSaplingCount = 16,
-logName == 'minecraft:log'
-saplingName == 'minecraft:sapling'
+logName == 'minecraft:log',
+saplingName == 'minecraft:sapling',
 }
 local logChestLoc = {-1, 0, 1}
 local saplingChestLoc = {-3, 0, 1}
