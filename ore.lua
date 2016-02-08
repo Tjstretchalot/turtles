@@ -47,7 +47,11 @@ ore.types = {
 	lead = {
 		itemName = 'IC2:blockOreLead',
 		prettyName = 'lead'
-	}
+	},
+  aequartz = {
+    itemName = 'appliedenergistics2:tile.OreQuartz',
+    prettyName = 'AE quartz'
+  }
 }
 
 ore.miscTypes = {
